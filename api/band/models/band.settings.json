@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "bands",
+  "info": {
+    "name": "band"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "manager": {
+      "plugin": "users-permissions",
+      "model": "user",
+      "via": "managedBands"
+    },
+    "members": {
+      "plugin": "users-permissions",
+      "collection": "user",
+      "via": "bands",
+      "dominant": true
+    },
+    "invitations": {
+      "type": "component",
+      "repeatable": true,
+      "component": "band.invitation"
+    }
+  }
+}
