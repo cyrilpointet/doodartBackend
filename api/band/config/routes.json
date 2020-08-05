@@ -47,6 +47,16 @@
       "config": {
         "policies": []
       }
+    },
+    {
+      "method": "POST",
+      "path": "/bands/add_invitation",
+      "handler": "band.addInvitation"
+    },
+    {
+      "method": "POST",
+      "path": "/bands/process_invitation",
+      "handler": "band.processInvitation"
     }
   ]
 }
