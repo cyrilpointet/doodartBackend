@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "invitations",
+  "info": {
+    "name": "invitation"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "band": {
+      "model": "band",
+      "via": "invitations"
+    },
+    "userEmail": {
+      "type": "email",
+      "required": true
+    },
+    "isFromBand": {
+      "type": "boolean",
+      "required": true
+    }
+  }
+}

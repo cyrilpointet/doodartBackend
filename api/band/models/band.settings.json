@@ -28,9 +28,8 @@
       "dominant": true
     },
     "invitations": {
-      "type": "component",
-      "repeatable": true,
-      "component": "band.invitation"
+      "via": "band",
+      "collection": "invitation"
     }
   }
 }

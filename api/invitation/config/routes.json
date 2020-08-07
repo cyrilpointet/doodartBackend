@@ -2,56 +2,51 @@
   "routes": [
     {
       "method": "GET",
-      "path": "/bands",
-      "handler": "band.find",
+      "path": "/invitations",
+      "handler": "invitation.find",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/bands/count",
-      "handler": "band.count",
+      "path": "/invitations/count",
+      "handler": "invitation.count",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/bands/:id",
-      "handler": "band.findOne",
+      "path": "/invitations/:id",
+      "handler": "invitation.findOne",
       "config": {
         "policies": []
       }
     },
     {
       "method": "POST",
-      "path": "/bands",
-      "handler": "band.create",
+      "path": "/invitations",
+      "handler": "invitation.create",
       "config": {
         "policies": []
       }
     },
     {
       "method": "PUT",
-      "path": "/bands/:id",
-      "handler": "band.update",
+      "path": "/invitations/:id",
+      "handler": "invitation.update",
       "config": {
         "policies": []
       }
     },
     {
       "method": "DELETE",
-      "path": "/bands/:id",
-      "handler": "band.delete",
+      "path": "/invitations/:id",
+      "handler": "invitation.delete",
       "config": {
         "policies": []
       }
-    },
-    {
-      "method": "POST",
-      "path": "/bands/process_invitation",
-      "handler": "band.processInvitation"
     }
   ]
 }
