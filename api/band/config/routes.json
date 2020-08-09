@@ -52,6 +52,11 @@
       "method": "POST",
       "path": "/bands/process_invitation",
       "handler": "band.processInvitation"
+    },
+    {
+      "method": "POST",
+      "path": "/bands/remove_member",
+      "handler": "band.removeMember"
     }
   ]
 }

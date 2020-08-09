@@ -6,7 +6,59 @@ const { sanitizeEntity } = require('strapi-utils');
  * to customize this controller
  */
 
+async function getQueryingUserId(request) {
+  const decrypted = await strapi.plugins[
+    'users-permissions'
+    ].services.jwt.getToken(request);
+  return decrypted.id
+}
+
 module.exports = {
+  async delete(ctx) {
+    const { id } = ctx.params;
+
+    const userId = await getQueryingUserId(ctx);
+    const bandEntity = await strapi.query('band').findOne({ id: id });
+    if (userId !== bandEntity.manager.id) {
+      await ctx.send({
+        message: 'not a manager'
+      }, 403);
+      return
+    }
+
+    await strapi.query('invitation').delete({ band: id });
+    const entity = await strapi.query('band').delete({ id });
+    return sanitizeEntity(entity, { model: strapi.models.band });
+  },
+
+  removeMember: async ctx => {
+    const {bandId, memberId} = ctx.request.body;
+    const userId = await getQueryingUserId(ctx);
+
+    const bandEntity = await strapi.query('band').findOne({ id: bandId });
+
+    if (userId !== memberId && userId !== bandEntity.manager.id) {
+      await ctx.send({
+        message: 'not self user nor manager'
+      }, 403);
+      return
+    }
+
+    if (memberId === bandEntity.manager.id) {
+      await ctx.send({
+        message: 'manager can\'t leave band'
+      }, 400);
+      return
+    }
+
+    const newMembers = bandEntity.members.filter(member => member.id !== memberId);
+    const updatedBand = await strapi.services.band.update(
+      {id: bandEntity.id},
+      {members: newMembers}
+    );
+    return sanitizeEntity(updatedBand, { model: strapi.models.band });
+  },
+
   processInvitation: async ctx => {
     const { invitationId, value } = ctx.request.body;
     const invitationEntity = await strapi.query('invitation').findOne({ id: invitationId });
