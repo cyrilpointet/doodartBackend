@@ -32,7 +32,7 @@ module.exports = {
     // test invitation pending
     if (invitationEntity !== null) {
        await ctx.send({
-        message: 'invitaion pending'
+        message: 'invitation pending'
       }, 400);
        return
     }

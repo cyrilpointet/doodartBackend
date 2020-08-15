@@ -30,6 +30,10 @@
     "invitations": {
       "via": "band",
       "collection": "invitation"
+    },
+    "band_events": {
+      "via": "band",
+      "collection": "band-event"
     }
   }
 }

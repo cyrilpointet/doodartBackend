@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "band_events",
+  "info": {
+    "name": "bandEvent"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "place": {
+      "type": "string"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "project",
+        "validated",
+        "cancelled"
+      ],
+      "default": "project"
+    },
+    "start": {
+      "type": "datetime",
+      "required": true
+    },
+    "end": {
+      "type": "datetime",
+      "required": true
+    },
+    "band": {
+      "model": "band",
+      "via": "band_events"
+    },
+    "manager": {
+      "plugin": "users-permissions",
+      "model": "user"
+    }
+  }
+}
