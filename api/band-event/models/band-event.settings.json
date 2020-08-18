@@ -43,6 +43,10 @@
     "manager": {
       "plugin": "users-permissions",
       "model": "user"
+    },
+    "presences": {
+      "via": "band_event",
+      "collection": "presence"
     }
   }
 }

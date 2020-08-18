@@ -27,6 +27,8 @@ module.exports = {
     }
 
     await strapi.query('invitation').delete({ band: id });
+    await strapi.query('band-event').delete({ band: id });
+    await strapi.query('presence').delete({ 'band-event': null });
     const entity = await strapi.query('band').delete({ id });
     return sanitizeEntity(entity, { model: strapi.models.band });
   },
@@ -56,6 +58,14 @@ module.exports = {
       {id: bandEntity.id},
       {members: newMembers}
     );
+
+    const presencePromises = [];
+    updatedBand.band_events.forEach(event => {
+      presencePromises.push(
+        strapi.query('presence').delete({ band_event: event.id, user: memberId })
+      )
+    })
+    await Promise.all(presencePromises);
     return sanitizeEntity(updatedBand, { model: strapi.models.band });
   },
 

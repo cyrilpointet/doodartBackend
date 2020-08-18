@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "presences",
+  "info": {
+    "name": "presence"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "band_event": {
+      "model": "band-event",
+      "via": "presences"
+    },
+    "user": {
+      "plugin": "users-permissions",
+      "model": "user",
+      "via": "presences"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "yes",
+        "no",
+        "maybe"
+      ]
+    }
+  }
+}

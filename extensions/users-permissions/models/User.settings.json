@@ -60,6 +60,10 @@
     "bands": {
       "via": "members",
       "collection": "band"
+    },
+    "presences": {
+      "via": "user",
+      "collection": "presence"
     }
   }
 }
