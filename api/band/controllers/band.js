@@ -1,11 +1,6 @@
 'use strict';
 const { sanitizeEntity } = require('strapi-utils');
 
-/**
- * Read the documentation (https://strapi.io/documentation/v3.x/concepts/controllers.html#core-controllers)
- * to customize this controller
- */
-
 async function getQueryingUserId(request) {
   const decrypted = await strapi.plugins[
     'users-permissions'
@@ -26,11 +21,22 @@ module.exports = {
       return
     }
 
-    await strapi.query('invitation').delete({ band: id });
-    await strapi.query('band-event').delete({ band: id });
-    await strapi.query('presence').delete({ 'band-event': null });
-    const entity = await strapi.query('band').delete({ id });
-    return sanitizeEntity(entity, { model: strapi.models.band });
+    // delete presence and comments to events
+    const presencePromises = [];
+    bandEntity.band_events.forEach(event => {
+      presencePromises.push(
+        strapi.query('presence').delete({ band_event: event.id })
+      )
+      presencePromises.push(
+        strapi.query('comment').delete({ band_event: event.id })
+      )
+    })
+    await Promise.all(presencePromises);
+
+    await strapi.query('invitation').delete({ band: id }); // delete invitations
+    await strapi.query('band-event').delete({ band: id }); // delete events
+    const deletedBand = strapi.query('band').delete({ id: id }); // delete band
+    return sanitizeEntity(deletedBand, { model: strapi.models.band });
   },
 
   removeMember: async ctx => {
@@ -59,6 +65,7 @@ module.exports = {
       {members: newMembers}
     );
 
+    // remove user from events
     const presencePromises = [];
     updatedBand.band_events.forEach(event => {
       presencePromises.push(
@@ -66,6 +73,22 @@ module.exports = {
       )
     })
     await Promise.all(presencePromises);
+
+    // remove events managed by user
+    const eventPromises = [];
+    updatedBand.band_events.forEach(event => {
+      if (event.manager === memberId) {
+        eventPromises.push(
+          strapi.query('band-event').delete({ id: event.id })
+        )
+        eventPromises.push(
+          strapi.query('presence').delete({ band_event: event.id })
+        )
+      }
+
+    })
+    await Promise.all(eventPromises);
+
     return sanitizeEntity(updatedBand, { model: strapi.models.band });
   },
 

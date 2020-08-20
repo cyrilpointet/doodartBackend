@@ -1,11 +1,6 @@
 'use strict';
 const { sanitizeEntity } = require('strapi-utils');
 
-/**
- * Read the documentation (https://strapi.io/documentation/v3.x/concepts/controllers.html#core-controllers)
- * to customize this controller
- */
-
 async function getQueryingUserId(request) {
   const decrypted = await strapi.plugins[
     'users-permissions'
@@ -16,7 +11,7 @@ async function getQueryingUserId(request) {
 module.exports = {
   async findOne(ctx) {
     const { id } = ctx.params;
-    const eventEntity = await strapi.query('band-event').findOne({ id: id }, ['band.members', 'presences.user', 'manager']);
+    const eventEntity = await strapi.query('band-event').findOne({ id: id }, ['band.members', 'band.manager', 'presences.user', 'manager', 'comments.user']);
 
     return sanitizeEntity(eventEntity, { model: strapi.models['band-event'] });
   },
@@ -48,14 +43,14 @@ module.exports = {
       )
     })
     await Promise.all(presencePromises);
-    const newEntity = await strapi.query('band-event').findOne({id: entity.id})
+    const newEntity = await strapi.query('band-event').findOne({id: entity.id}, ['band.members', 'band.manager', 'presences.user', 'manager', 'comments.user'])
     return sanitizeEntity(newEntity, { model: strapi.models['band-event'] });
   },
 
   async update(ctx) {
     const { id } = ctx.params;
     await strapi.query('band-event').update({ id: id }, ctx.request.body);
-    const eventEntity = await strapi.query('band-event').findOne({ id: id }, ['band.members', 'presences.user', 'manager']);
+    const eventEntity = await strapi.query('band-event').findOne({ id: id }, ['band.members', 'band.manager', 'presences.user', 'manager', 'comments.user']);
 
     return sanitizeEntity(eventEntity, { model: strapi.models['band-event'] });
   },
@@ -74,6 +69,7 @@ module.exports = {
     }
 
     await strapi.query('presence').delete({ band_event: id });
+    await strapi.query('comment').delete({ band_event: id });
     const entity = await strapi.query('band-event').delete({ id: id });
     return sanitizeEntity(entity, { model: strapi.models['band-event'] });
   },

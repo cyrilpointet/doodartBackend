@@ -1,8 +1,14 @@
 'use strict';
+const { sanitizeEntity } = require('strapi-utils');
 
-/**
- * Read the documentation (https://strapi.io/documentation/v3.x/concepts/controllers.html#core-controllers)
- * to customize this controller
- */
+module.exports = {
+  async delete(ctx) {
+    const { id } = ctx.params;
 
-module.exports = {};
+    const presenceEntity = await strapi.query('presence').findOne({ id: id });
+
+    await strapi.query('comment').delete({ band_event: presenceEntity.band_event.id, user: presenceEntity.user.id });
+    const entity = await strapi.query('presence').delete({ id: id });
+    return sanitizeEntity(entity, { model: strapi.models['presence'] });
+  }
+};

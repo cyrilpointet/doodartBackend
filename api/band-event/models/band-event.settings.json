@@ -47,6 +47,10 @@
     "presences": {
       "via": "band_event",
       "collection": "presence"
+    },
+    "comments": {
+      "via": "band_event",
+      "collection": "comment"
     }
   }
 }
